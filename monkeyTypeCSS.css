@@ -1,0 +1,294 @@
+@font-face {
+    font-family: robotoMono;
+    src: url(fonts/RobotoMono-Regular.ttf);
+}
+
+@font-face {
+    font-family: LexendDeca;
+    src: url(fonts/lexendDeca/LexendDeca-Regular.ttf);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    
+    background: #323437;   
+}
+
+.title {
+    height: 80px;
+    width: 600px;
+
+    display: flex;
+    justify-content: start;
+    align-items: center;
+
+    position: absolute;
+    margin-bottom: 725px;
+    margin-right: 600px;
+}
+
+.logo {
+    fill: #e2b714;
+    margin-right: 5px;
+}
+
+.logo.logo-style {
+    fill: #646669;
+}
+
+.text-title {
+    font-family: LexendDeca;
+    margin-bottom: 5px;
+}
+
+.top {
+    color: #646669;
+    font-size: 10px;
+    margin-top: -5px;
+    margin-bottom: 3px;
+}
+
+.top-style {
+    color: #323437;
+}
+
+.bottom {
+    color: #d1d0c5;
+    font-size: 32px;
+    margin-top: -10px;
+}
+
+.bottom-style {
+    color: #646669;
+}
+
+
+.settings-container {
+    width: 660px;
+    height: 38px;
+    border-radius: 9px;
+    background: #2c2e31;
+    color: #646669;
+    
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr .1fr .9fr;
+    justify-content: space-around;
+    align-items: center;
+
+    position: absolute;
+    margin-right: 5px;
+    margin-bottom: 580px;
+}
+.settings-container:hover {
+    cursor: pointer;
+}
+.settings-container.sTime, .settings-container.sWords {
+    width: 500px;
+}
+.settings.sQuote {
+    width: 660px;
+}
+
+/*
+shrink {
+    animation: shrink 10s 1;
+}
+grow {
+    animation: grow 1s linear;
+}
+@keyframes shrink {
+    from { width: 660px; }
+    to { width: 500px; }
+}
+@keyframes grow {
+    from { width: 500px; }
+    to { width: 660px; }
+} */
+.modes {
+    display: grid;
+    grid-auto-flow: column;
+    justify-content: space-around;
+    align-items: center;
+    grid-auto-columns: 1fr;
+}
+.setting-spacer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.spacer {
+    height: 60%;
+    width: 4px;
+    border-radius: 2px;
+    background: #323437;
+}
+.number-options {
+    display: grid;
+    grid-auto-flow: column;
+    justify-content: space-around;
+    align-items: center;
+    grid-auto-columns: 1fr;
+    column-gap: 1fr;
+}
+
+.sc {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.sc:hover {
+    color:#d1d0c5;
+}
+.sc:active {
+    color: #646669;
+}
+.currPick {
+    color:#e2b714;
+}
+.settings-style {
+    display: none;
+}
+
+.endTest {
+    background: yellow;
+    height: 100px;
+    width: 300px;
+
+    position: absolute;
+    margin-bottom: 400px;
+}
+.endTest.hide {
+    display: none;
+}
+
+.language-container {
+    height: 40px;
+    font-family: robotoMono;
+    font-size: 16px;
+    color: #646669;
+
+    display: flex;
+    justify-content: start;
+    align-items: baseline;
+
+    position: absolute;
+    margin-right: 5px;
+    margin-bottom: 220px;
+}
+.fas.fa-globe-americas {
+    margin-right: 16px;
+    font-size: 16px;
+}
+
+
+.text-passage {
+    width: 1190px;
+    height: 120px;
+    overflow: hidden;
+
+    font-family: robotoMono;
+    font-size: 24px;
+    color: #646669;
+
+    position: absolute;
+    margin-bottom: 65px;
+}
+.text-passage .word {
+    position: relative;
+    display: inline-block;
+    line-height: 35px;
+    margin: 0 5px 5px;
+}
+.correct {
+    color: #d1d0c5;
+}
+.incorrect {
+    color: #ca4754;
+}
+.incorrect-underline {
+    text-decoration: underline;
+    text-decoration-color: #ca4754;
+}
+.extra {
+    color: #7e2a33;
+}
+
+
+.cursor {
+    height: 1.8rem;
+    width: 2.5px;
+    border-radius: 1px;
+    background: #e2b714;
+
+    position: fixed;
+    top: 303.5px;
+    left: 128px;
+}
+.slide {
+    transition: transform .08s linear;
+    transform: translateX(0);
+}
+.cursor-blink {
+    animation: blink-animation .9s infinite;
+}
+@keyframes blink-animation {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+@keyframes disappear-animation {
+    0%, 100% { opacity: 0; }
+}
+.blink {
+    animation: blink-animation .3s 1;
+}
+.disappear {
+    background: none;
+}
+
+.restart-button {
+    color: #646669;
+    height: 58px;
+    width: 80px;
+    font-family: myRoboto;
+    font-size: 18px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    position: absolute;
+    margin-top: 135px;
+    margin-right: 5px;
+}
+.restart-button:hover, .language-container:hover {
+    color:#d1d0c5;
+    cursor: pointer;
+}
+
+.bottom-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    position: absolute;
+    bottom: 10px;
+
+    font-family: robotoMono;
+    color: #646669
+}
