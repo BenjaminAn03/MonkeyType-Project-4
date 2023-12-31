@@ -20,7 +20,10 @@ const TEXT_TITLE_BOTTOM = document.querySelector('.bottom');
 const LOGO_SVG = document.querySelector('.logo');
 
 const END_TEST = document.querySelector('.endTest');
-let numWords = 200;
+let startTime = 0;
+let endTime = 0;
+let begin = false;
+
 function addClass(element, className) {
     element.classList.add(className);
 }
@@ -141,9 +144,16 @@ document.addEventListener('keydown', event => {
     if (CURSOR.classList.contains('cursor-blink')) {
         removeClass(CURSOR, 'cursor-blink');
     }
+    if (begin === false) {
+        begin = true;
+        startTime = new Date().getTime();
+        console.log(startTime);
+    }
+
     const currentWord = document.querySelector('.word.current');
     const currentLetter = document.querySelector('.letter.current');
     const firstLetter = document.querySelector('.word.current').firstElementChild;
+    const firstWord = document.querySelector('.word');
     const lastWord = document.querySelector('.words').lastElementChild;
 
     const keyPressed = event.key;
@@ -209,7 +219,7 @@ document.addEventListener('keydown', event => {
         addClass(currentWord.nextElementSibling.firstElementChild, 'current');
     }
 
-    //if backspace key is pressed
+    //if backspace is pressed
     else if (keyPressed === 'Backspace') {
         // if going back at the start of a word
         const prevWord = currentWord.previousElementSibling;
@@ -303,13 +313,11 @@ document.addEventListener('keydown', event => {
         else {
             //deletes any extra characters
             if (currentWord.lastElementChild.classList.contains('extra')) {currentWord.lastElementChild.remove(); }
-
             else {
                 removeClass(currentWord.lastElementChild, 'correct');
                 removeClass(currentWord.lastElementChild, 'incorrect');
                 addClass(currentWord.lastElementChild, 'current');
             }
-            
         }
     }
     
@@ -322,7 +330,7 @@ document.addEventListener('keydown', event => {
         let translationVal = '0px';
         if (nextLetter) {
             cursor.style.top = nextLetter.getBoundingClientRect().top + "px";
-            translationVal = nextLetter.getBoundingClientRect().left - 130 + "px";
+            translationVal = nextLetter.getBoundingClientRect().left - firstWord.getBoundingClientRect().left + "px";
             cursor.style.transform = `translateX(${translationVal})`;
             addClass(cursor, 'slide');
         }
@@ -348,9 +356,23 @@ document.addEventListener('keydown', event => {
     if (lastWord.classList.contains('current')) {
         const letters = [...lastWord.querySelectorAll('.letter')];
         const endGame = letters.every(letter => letter.classList.contains('correct'));
-        if (endGame === true) { removeClass(END_TEST, 'hide'); restingStyle(); }
+        if (endGame === true) { 
+            removeClass(END_TEST, 'hide'); 
+            restingStyle(); 
+            endTime = new Date().getTime();
+            const WPM = evaluateWPM();
+            END_TEST.innerText = "Words per minute: " + WPM;
+        }
     }
 })
+
+//HANDLES WPM CALCULATIONS
+function evaluateWPM() {
+    let WPM = 0;
+    const elapsedTime = (endTime - startTime) / 60000;
+    WPM = Math.floor(25 / elapsedTime);
+    return WPM;
+}
 
 
 //HANDLES MODE SELECTION
