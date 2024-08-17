@@ -23,6 +23,7 @@ const END_TEST = document.querySelector('.endTest');
 let startTime = 0;
 let endTime = 0;
 let begin = false;
+let wordAmount = 25;
 
 function addClass(element, className) {
     element.classList.add(className);
@@ -51,10 +52,16 @@ function restingStyle() {
 function newTest(newNum) {
     //creates an array of n words
     let passage = [];
-    for (let i = 0; i < 25; i++) {
-        passage.push(wordArr[Math.floor(Math.random() * wordArr.length)]);
+    if (newNum === 1) {
+        passage = ['under', 'construction']; 
     }
-    
+
+    else {
+        for (let i = 0; i < (wordAmount || newNum); i++) {
+            passage.push(wordArr[Math.floor(Math.random() * wordArr.length)]);
+        }
+    }
+
     //creates a div element for each word
     passage.forEach((word, wordIndex) => {
         const wordDiv = document.createElement('div');
@@ -91,7 +98,7 @@ function newTest(newNum) {
 newTest();
 
 //makes a new text passage, restarts the game
-function restart() {
+function restart(wordAmount) {
     WORDS.style.marginTop = '0px';
     const words = WORDS.querySelectorAll('div');
     const firstLetter = document.querySelector('.letter');
@@ -107,7 +114,7 @@ function restart() {
     addClass(RESTART_BUTTON, 'blink');
 
     const animationDuration = 300;
-    setTimeout(newTest, animationDuration/2);
+    setTimeout(newTest(wordAmount), animationDuration/2);
 
     const onAnimationEnd = () => {
         removeClass(TEXT_PASSAGE, 'blink');
@@ -126,6 +133,9 @@ function restart() {
 
     restingStyle();
     addClass(END_TEST, 'hide');
+    startTime = 0;
+    endTime = 0;
+    begin = false;
 }
 RESTART_BUTTON.addEventListener('mousedown', () => {
     addClass(CURSOR, 'disappear');
@@ -323,24 +333,24 @@ document.addEventListener('keydown', event => {
     
     //moveCursor
     const moveCursor = () => {
-        const nextLetter = document.querySelector('.letter.current');
-        const nextWord = document.querySelector('.word.current');
+        const currentLetter = document.querySelector('.letter.current');
+        const currentWord = document.querySelector('.word.current');
         const cursor = document.querySelector('.cursor');
 
-        let translationVal = '0px';
-        if (nextLetter) {
-            cursor.style.top = nextLetter.getBoundingClientRect().top + "px";
-            translationVal = nextLetter.getBoundingClientRect().left - firstWord.getBoundingClientRect().left + "px";
-            cursor.style.transform = `translateX(${translationVal})`;
+        if (currentLetter) {
+            // Move the cursor to the current letter
+            cursor.style.top = currentLetter.getBoundingClientRect().top + "px";
+            cursor.style.left = currentLetter.getBoundingClientRect().left + "px";
             addClass(cursor, 'slide');
-        }
-        else if (!nextLetter) { //moves cursor to the end of the word when you reach the last letter
-            cursor.style.top = nextWord.getBoundingClientRect().top + 1 + "px";
-            translationVal = nextWord.getBoundingClientRect().right - 130 + "px";
-            cursor.style.transform = `translateX(${translationVal})`;
+        } else if (currentWord) { 
+            // If the last letter is typed, move cursor to the end of the word
+            const lastLetter = currentWord.lastElementChild;
+            cursor.style.top = lastLetter.getBoundingClientRect().top + "px";
+            cursor.style.left = lastLetter.getBoundingClientRect().right + "px"; // Position at the end of the last letter
             addClass(cursor, 'slide');
         }
     };
+
     moveCursor();
 
     //scroll page
@@ -370,7 +380,7 @@ document.addEventListener('keydown', event => {
 function evaluateWPM() {
     let WPM = 0;
     const elapsedTime = (endTime - startTime) / 60000;
-    WPM = Math.floor(25 / elapsedTime);
+    WPM = Math.floor(wordAmount / elapsedTime);
     return WPM;
 }
 
@@ -380,23 +390,29 @@ MODE_BUTTON.addEventListener('click', (event) => {
     //if mode is already selected
     if(event.target && !event.target.classList.contains('currPick')) {
         optionBlink();
-        restart();
         if (event.target.dataset.key === 'setting-time') {
             timeOptions();
             SETTINGS_BUTTON.className = "settings-container";
             addClass(SETTINGS_BUTTON, 'sTime');
+            wordAmount = 1;
 
         }
         else if (event.target.dataset.key === 'setting-words') {
             wordOptions();
             SETTINGS_BUTTON.className = "settings-container";
             addClass(SETTINGS_BUTTON, 'sWords');
+            const selectedOption = NUMBER_OPTIONS.querySelector('.currPick');
+            if (selectedOption) {
+                // Do something with the selectedOption, for example, setting wordAmount
+                wordAmount = parseInt(selectedOption.innerText);
+            }
         }
         else if (event.target.dataset.key === 'setting-quote') {
             quoteOptions();
             SETTINGS_BUTTON.className = "settings-container";
             addClass(SETTINGS_BUTTON, 'sQuote');
         }
+        restart(wordAmount);
     }
 
     //remove currPick from all modes
@@ -416,15 +432,24 @@ MODE_BUTTON.addEventListener('click', (event) => {
 //HANDLES OPTION SELECTION
 NUMBER_OPTIONS.addEventListener('click', (event) => {
     const options = NUMBER_OPTIONS.querySelectorAll('div');
-    restart();
     options.forEach(option => {
         if (option.classList.contains('currPick')) {
             removeClass(option, 'currPick');
         }
     })
+
     if(event.target) {
         addClass(event.target, 'currPick');
+        const modesContainer = document.querySelector('.modes');
+        const selectedMode = modesContainer.querySelector('.currPick');
+        if (selectedMode && selectedMode.classList.contains('setting-time')) {
+            wordAmount = 1;
+        }
+        else {
+            wordAmount = parseInt(event.target.innerText);
+        }   
     }
+    restart(wordAmount);
 })
 
 function timeOptions() {
